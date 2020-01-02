@@ -3,13 +3,24 @@ import { Route, Switch } from "react-router-dom";
 
 import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
-import Test from "./containers/Test";
+import Login from "./containers/Login";
 
-export default function Routes() {
+interface Props {
+  appProps: any;
+}
+
+function withAppProps<P extends AppProps, AppProps>(
+  Component: React.ComponentType<P>,
+  appProps: AppProps
+) {
+  return (props: P) => <Component {...appProps} {...props} />;
+}
+
+export default function Routes({ appProps }: Props) {
   return (
     <Switch>
-      <Route path="/" exact component={Home} />
-      <Route path="/login" component={Test} />
+      <Route path="/" exact component={withAppProps(Home, appProps)} />
+      <Route path="/login" exact component={withAppProps(Login, appProps)} />
 
       <Route component={NotFound} />
     </Switch>

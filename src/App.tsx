@@ -1,12 +1,45 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, withRouter, RouteComponentProps } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
+import { Auth } from "aws-amplify";
 
 import LinkContainer from "./components/LinkContainer";
 import Routes from "./Routes";
 import "./App.css";
 
-function App() {
+function App(props: RouteComponentProps) {
+  const [isAuthenticated, userHasAuthenticated] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(true);
+
+  useEffect(() => {
+    onLoad();
+  }, []);
+
+  async function onLoad() {
+    try {
+      await Auth.currentSession();
+      userHasAuthenticated(true);
+    } catch (e) {
+      if (e !== "No current user") {
+        alert(e);
+      }
+    }
+
+    setIsAuthenticating(false);
+  }
+
+  async function handleLogout() {
+    await Auth.signOut();
+
+    userHasAuthenticated(false);
+
+    props.history.push("/login");
+  }
+
+  if (isAuthenticating) {
+    return null;
+  }
+
   return (
     <div className="App container">
       <Navbar collapseOnSelect variant="light" bg="light">
@@ -17,15 +50,23 @@ function App() {
         <Navbar.Collapse>
           <Nav className="mr-auto"></Nav>
           <Nav>
-            <LinkContainer to="/login">
-              <Nav.Item>Login</Nav.Item>
-            </LinkContainer>
+            {isAuthenticated ? (
+              <>
+                <Nav.Item onClick={handleLogout}>Logout</Nav.Item>
+              </>
+            ) : (
+              <>
+                <LinkContainer to="/login">
+                  <Nav.Item>Login</Nav.Item>
+                </LinkContainer>
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Routes />
+      <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
     </div>
   );
 }
 
-export default App;
+export default withRouter(App);
