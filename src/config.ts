@@ -6,6 +6,15 @@ const config = {
     userPoolWebClientId: process.env.REACT_APP_USER_POOL_CLIENT_ID,
     mandatorySignIn: true
   },
+  API: {
+    endpoints: [
+      {
+        name: "api",
+        endpoint: process.env.REACT_APP_ENDPOINT,
+        region: process.env.REACT_APP_AWS_REGION
+      }
+    ]
+  },
   Storage: {
     bucket: process.env.REACT_APP_IMAGE_BUCKET,
     region: process.env.REACT_APP_AWS_REGION,

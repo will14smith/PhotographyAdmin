@@ -1,9 +1,13 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
+
+import AuthenticatedRoute from "./components/AuthenticatedRoute";
+import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 
 import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
 import Login from "./containers/Login";
+import PhotographsList from "./containers/PhotographsList";
 
 interface Props {
   appProps: any;
@@ -20,7 +24,31 @@ export default function Routes({ appProps }: Props) {
   return (
     <Switch>
       <Route path="/" exact component={withAppProps(Home, appProps)} />
-      <Route path="/login" exact component={withAppProps(Login, appProps)} />
+
+      <UnauthenticatedRoute
+        path="/login"
+        exact
+        component={Login}
+        appProps={appProps}
+      />
+
+      <AuthenticatedRoute
+        path="/photographs"
+        render={props => <PhotographRoutes {...props} appProps={appProps} />}
+        appProps={appProps}
+      />
+
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function PhotographRoutes({ appProps }: any) {
+  let { path } = useRouteMatch();
+
+  return (
+    <Switch>
+      <Route path={path} exact component={PhotographsList} />
 
       <Route component={NotFound} />
     </Switch>

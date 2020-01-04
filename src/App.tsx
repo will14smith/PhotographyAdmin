@@ -3,7 +3,8 @@ import { Link, withRouter, RouteComponentProps } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
 import { Auth } from "aws-amplify";
 
-import LinkContainer from "./components/LinkContainer";
+import NavRouterLink from "./components/NavRouterLink";
+
 import Routes from "./Routes";
 import "./App.css";
 
@@ -48,7 +49,14 @@ function App(props: RouteComponentProps) {
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse>
-          <Nav className="mr-auto"></Nav>
+          <Nav className="mr-auto" activeKey={props.location.pathname}>
+            {isAuthenticated ? (
+              <>
+                <NavRouterLink to="/photographs">Photographs</NavRouterLink>
+                <NavRouterLink to="/layout">Layout</NavRouterLink>
+              </>
+            ) : null}
+          </Nav>
           <Nav>
             {isAuthenticated ? (
               <>
@@ -56,9 +64,7 @@ function App(props: RouteComponentProps) {
               </>
             ) : (
               <>
-                <LinkContainer to="/login">
-                  <Nav.Item>Login</Nav.Item>
-                </LinkContainer>
+                <NavRouterLink to="/login">Login</NavRouterLink>
               </>
             )}
           </Nav>
