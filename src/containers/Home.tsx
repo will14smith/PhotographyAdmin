@@ -1,14 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 import "./Home.css";
 
-export default function Home() {
+import { rebuildSite } from "../api/rebuild";
+import LoaderButton from "../components/LoaderButton";
+
+interface Props {
+  isAuthenticated: boolean;
+}
+
+export default function Home({ isAuthenticated }: Props) {
+  const [isRebuilding, setIsRebuilding] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function rebuild() {
+    setIsRebuilding(true);
+    setError(null);
+
+    try {
+      await rebuildSite();
+    } catch (err) {
+      setError("" + err);
+    }
+
+    setIsRebuilding(false);
+  }
+
   return (
     <div className="Home">
       <div className="lander">
         <h1>Photography Admin</h1>
         <p>An admin app for a photography static site generator</p>
       </div>
+      {isAuthenticated && (
+        <div className="rebuild-section">
+          <p>
+            If you feel the need to rebuild the static site before the scheduled
+            time click this button.
+          </p>
+          {error && <p className="text-danger">{error}</p>}
+          <p>
+            <LoaderButton
+              type="button"
+              size="lg"
+              variant="outline-danger"
+              isLoading={isRebuilding}
+              onClick={rebuild}
+            >
+              <span>
+                Generate Site <FontAwesomeIcon icon={faExclamationTriangle} />
+              </span>
+            </LoaderButton>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

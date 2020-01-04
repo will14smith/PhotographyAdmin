@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import { Button, ButtonProps } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +11,9 @@ interface Props extends ButtonProps {
   disabled?: boolean;
 
   children: React.ReactChild;
+
+  // this _should_ really come from the base props...
+  onClick?: (event: MouseEvent) => void;
 }
 
 export default function LoaderButton({
