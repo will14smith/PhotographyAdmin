@@ -7,7 +7,7 @@ export interface Props extends React.HTMLAttributes<HTMLElement> {
   alt?: string;
 }
 
-export default function S3Image(props: Props) {
+export default function S3Image({ imageKey, alt, ...props }: Props) {
   const [isLoading, setLoading] = useState(true);
   const [src, setSrc] = useState<string>();
 
@@ -16,7 +16,7 @@ export default function S3Image(props: Props) {
       setLoading(true);
 
       try {
-        const url = await getImageUrl(props.imageKey);
+        const url = await getImageUrl(imageKey);
 
         setSrc(url);
         setLoading(false);
@@ -26,11 +26,11 @@ export default function S3Image(props: Props) {
     }
 
     loadImage();
-  }, [props.imageKey]);
+  }, [imageKey]);
 
   return isLoading ? (
     <div {...props}>Loading...</div>
   ) : (
-    <img {...props} alt={props.alt} src={src} />
+    <img {...props} alt={alt} src={src} />
   );
 }

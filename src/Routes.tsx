@@ -10,6 +10,7 @@ import Login from "./containers/Login";
 import PhotographsList from "./containers/PhotographsList";
 import PhotographNew from "./containers/PhotographNew";
 import PhotographDetails from "./containers/PhotographDetails";
+import Layout from "./containers/Layout";
 
 interface Props {
   appProps: any;
@@ -37,6 +38,11 @@ export default function Routes({ appProps }: Props) {
       <AuthenticatedRoute
         path="/photographs"
         render={props => <PhotographRoutes {...props} appProps={appProps} />}
+        appProps={appProps}
+      />
+      <AuthenticatedRoute
+        path="/layout"
+        component={Layout}
         appProps={appProps}
       />
 

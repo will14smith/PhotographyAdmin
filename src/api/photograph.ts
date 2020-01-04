@@ -1,11 +1,12 @@
 import { API } from "aws-amplify";
 
 import { Image } from "./image";
+import { Layout } from "./layout";
 
 export interface Photograph {
   Id: string;
   Title: string;
-  // Layout?: LayoutModel;
+  Layout?: Layout;
 
   Images: Image[];
 
