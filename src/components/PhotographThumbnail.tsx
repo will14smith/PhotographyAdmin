@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { ImageType, Photograph } from "../api/photograph";
+import { ImageType } from "../api/image";
+import { Photograph } from "../api/photograph";
 import S3Image from "./S3Image";
 
 export interface Props {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Storage } from "aws-amplify";
+
+import { getImageUrl } from "../api/image";
 
 export interface Props extends React.HTMLAttributes<HTMLElement> {
   imageKey: string;
@@ -15,13 +16,9 @@ export default function S3Image(props: Props) {
       setLoading(true);
 
       try {
-        const image = await Storage.get(props.imageKey, {
-          customPrefix: { public: "" },
-          level: "public",
-          download: false
-        });
+        const url = await getImageUrl(props.imageKey);
 
-        setSrc(image as string);
+        setSrc(url);
         setLoading(false);
       } catch (err) {
         alert(err);

@@ -1,13 +1,7 @@
 import { API } from "aws-amplify";
 
-export enum ImageType {
-  Full = "Full",
-  Thumbnail = "Thumbnail"
-}
-export interface Image {
-  Type: ImageType;
-  ObjectKey: string;
-}
+import { Image } from "./image";
+
 export interface Photograph {
   Id: string;
   Title: string;
@@ -17,6 +11,12 @@ export interface Photograph {
 
   CaptureTime: Date;
   UploadTime: Date;
+}
+
+export interface PhotographNew {
+  Title: string;
+  ImageKey: string;
+  CaptureTime: Date;
 }
 
 export interface PhotographUpdate {
@@ -41,6 +41,12 @@ export async function loadPhotographs(): Promise<Photograph[]> {
 
 export async function loadPhotograph(id: string): Promise<Photograph> {
   const apiModel = await API.get("api", `/photograph/${id}`, {});
+
+  return toAppModel(apiModel);
+}
+
+export async function newPhotograph(model: PhotographNew): Promise<Photograph> {
+  const apiModel = await API.post("api", `/photograph`, { body: model });
 
   return toAppModel(apiModel);
 }

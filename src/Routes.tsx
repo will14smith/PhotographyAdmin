@@ -8,6 +8,7 @@ import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
 import Login from "./containers/Login";
 import PhotographsList from "./containers/PhotographsList";
+import PhotographNew from "./containers/PhotographNew";
 import PhotographDetails from "./containers/PhotographDetails";
 
 interface Props {
@@ -50,6 +51,7 @@ function PhotographRoutes({ appProps }: any) {
   return (
     <Switch>
       <Route path={path} exact component={PhotographsList} />
+      <Route path={`${path}/new`} component={PhotographNew} />
       <Route path={`${path}/:id`} component={PhotographDetails} />
 
       <Route component={NotFound} />

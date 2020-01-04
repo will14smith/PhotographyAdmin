@@ -12,6 +12,7 @@ import {
 } from "../api/photograph";
 import LoaderButton from "../components/LoaderButton";
 import PhotographThumbnail from "../components/PhotographThumbnail";
+import { partialSetState } from "../utils/partialState";
 
 interface Props {
   id: string;
@@ -25,12 +26,10 @@ export default function PhotographDetails(props: RouteChildrenProps<Props>) {
   const [error, setError] = useState<string | null>(null);
   const [photograph, setPhotograph] = useState<Photograph | null>(null);
 
-  function updatePhotograph(updates: Partial<Photograph>) {
-    return setPhotograph(photograph => {
-      if (!photograph) return photograph;
+  const updatePhotograph = partialSetState(setPhotograph);
 
-      return { ...photograph, ...updates };
-    });
+  function validateForm() {
+    return (photograph?.Title.length || 0) > 0;
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -139,7 +138,13 @@ export default function PhotographDetails(props: RouteChildrenProps<Props>) {
               />
             </Form.Group>
 
-            <LoaderButton block type="submit" size="lg" isLoading={isSaving}>
+            <LoaderButton
+              block
+              type="submit"
+              size="lg"
+              isLoading={isSaving}
+              disabled={!validateForm()}
+            >
               Save
             </LoaderButton>
           </Form>
