@@ -1,66 +1,51 @@
 import React from "react";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import {
+  RouteObject,
+} from "react-router-dom";
 
-import AuthenticatedRoute from "./components/AuthenticatedRoute";
-import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
-
-import Home from "./containers/Home";
+import App from './App';
 import NotFound from "./containers/NotFound";
-import Login from "./containers/Login";
+import Home from "./containers/Home";
 import PhotographsList from "./containers/PhotographsList";
 import PhotographNew from "./containers/PhotographNew";
 import PhotographDetails from "./containers/PhotographDetails";
 import Layout from "./containers/Layout";
 
-interface Props {
-  appProps: any;
-}
 
-function withAppProps<P extends AppProps, AppProps>(
-  Component: React.ComponentType<P>,
-  appProps: AppProps
-) {
-  return (props: P) => <Component {...appProps} {...props} />;
-}
+const routes: RouteObject[] = [
+  {
+    path: '/',
+    element: <App />,
+    errorElement: <NotFound />,
 
-export default function Routes({ appProps }: Props) {
-  return (
-    <Switch>
-      <Route path="/" exact component={withAppProps(Home, appProps)} />
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: 'photographs',
+        children: [
+          {
+            index: true,
+            element: <PhotographsList />,
+          },
+          {
+            path: 'new',
+            element: <PhotographNew />,
+          },
+          {
+            path: ':id',
+            element: <PhotographDetails />,
+          },
+        ],
+      },
+      {
+        path: 'layout',
+        element: <Layout />
+      },
+    ],
+  },
+];
 
-      <UnauthenticatedRoute
-        path="/login"
-        exact
-        component={Login}
-        appProps={appProps}
-      />
-
-      <AuthenticatedRoute
-        path="/photographs"
-        render={props => <PhotographRoutes {...props} appProps={appProps} />}
-        appProps={appProps}
-      />
-      <AuthenticatedRoute
-        path="/layout"
-        component={Layout}
-        appProps={appProps}
-      />
-
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
-
-function PhotographRoutes({ appProps }: any) {
-  let { path } = useRouteMatch();
-
-  return (
-    <Switch>
-      <Route path={path} exact component={PhotographsList} />
-      <Route path={`${path}/new`} component={PhotographNew} />
-      <Route path={`${path}/:id`} component={PhotographDetails} />
-
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
+export default routes;

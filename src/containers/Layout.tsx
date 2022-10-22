@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo, MouseEvent } from "react";
+import React, { useState, useMemo, MouseEvent } from "react";
 
 import { Photograph, loadPhotographs } from "../api/photograph";
 import { saveLayout, LayoutModel } from "../api/layout";
 import LayoutComponent from "../components/Layout";
+import useLoader from "../utils/useLoader";
 
 export default function Layout() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [photographs, setPhotographs] = useState<Photograph[]>([]);
+  const [saving, setSaving] = useState(false);
+
+  const { data: photographs, setData: setPhotographs, loading, error, setError } = useLoader([], loadPhotographs, []);
 
   const availablePhotographs = useMemo(
     () => photographs.filter(p => !p.Layout),
@@ -22,24 +22,6 @@ export default function Layout() {
     [photographs]
   );
 
-  useEffect(() => {
-    async function onLoad() {
-      setIsLoading(true);
-      try {
-        const photographs = await loadPhotographs();
-        setPhotographs(photographs);
-        setError(null);
-      } catch (err) {
-        setPhotographs([]);
-        setError("" + err);
-      }
-
-      setIsLoading(false);
-    }
-
-    onLoad();
-  }, []);
-
   async function save() {
     const layout: LayoutModel = {};
     photographs.forEach(p => {
@@ -48,7 +30,7 @@ export default function Layout() {
       }
     });
 
-    setIsSaving(true);
+    setSaving(true);
     setError(null);
 
     try {
@@ -57,11 +39,11 @@ export default function Layout() {
       setError("" + err);
     }
 
-    setIsSaving(false);
+    setSaving(false);
   }
 
   function onAvailableSelected(photograph: Photograph) {
-    if (isSaving) {
+    if (saving) {
       return;
     }
 
@@ -74,7 +56,7 @@ export default function Layout() {
   }
 
   function onPreviewSelected(event: MouseEvent, photograph: Photograph) {
-    if (isSaving) {
+    if (saving) {
       return;
     }
 
@@ -93,8 +75,8 @@ export default function Layout() {
       selectedPhotographs={selectedPhotographs}
       onAvailableSelected={onAvailableSelected}
       onPreviewSelected={onPreviewSelected}
-      isLoading={isLoading}
-      isSaving={isSaving}
+      loading={loading}
+      saving={saving}
       error={error}
       onSave={save}
     />

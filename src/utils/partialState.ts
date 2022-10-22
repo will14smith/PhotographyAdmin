@@ -1,10 +1,13 @@
-type StateUpdate<Model> = (model: Model) => Model;
-type SetState<Model> = (updateFn: StateUpdate<Model>) => void;
+type StateUpdate<TModel> = (model?: TModel) => TModel;
+type SetState<TModel> = (updateFn: StateUpdate<TModel>) => void;
 
-export function partialSetState<Model>(setState: SetState<Model>) {
-  return function(updates: Partial<Model>) {
-    return setState((model: Model) => {
-      return { ...model, ...updates };
+export function partialSetState<TModel>(setState: SetState<TModel>) {
+  return function(updates: Partial<TModel>) {
+    return setState((model?: TModel) => {
+      if(model) {
+        return { ...model, ...updates };
+      }
+      return { ...updates } as TModel;
     });
   };
 }

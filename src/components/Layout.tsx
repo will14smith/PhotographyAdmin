@@ -12,8 +12,8 @@ interface Props {
   onAvailableSelected: (photograph: Photograph) => void;
   onPreviewSelected: (event: MouseEvent, photograph: Photograph) => void;
 
-  isLoading: boolean;
-  isSaving: boolean;
+  loading: boolean;
+  saving: boolean;
   error: string | null;
 
   onSave: () => void;
@@ -26,8 +26,8 @@ export default function Layout({
   onAvailableSelected,
   onPreviewSelected,
 
-  isLoading,
-  isSaving,
+  loading: isLoading,
+  saving: isSaving,
   error,
 
   onSave
@@ -40,7 +40,6 @@ export default function Layout({
           onSelected={onPreviewSelected}
         />
         <LoaderButton
-          block
           type="button"
           size="lg"
           isLoading={isSaving}

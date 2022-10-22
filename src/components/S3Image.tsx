@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { getImageUrl } from "../api/image";
+import useLoader from "../utils/useLoader";
 
 export interface Props extends React.HTMLAttributes<HTMLElement> {
   imageKey: string;
@@ -8,28 +9,12 @@ export interface Props extends React.HTMLAttributes<HTMLElement> {
 }
 
 export default function S3Image({ imageKey, alt, ...props }: Props) {
-  const [isLoading, setLoading] = useState(true);
-  const [src, setSrc] = useState<string>();
+  const { data: src, loading, error } = useLoader("", () => getImageUrl(imageKey), [imageKey]);
 
-  useEffect(() => {
-    async function loadImage() {
-      setLoading(true);
-
-      try {
-        const url = await getImageUrl(imageKey);
-
-        setSrc(url);
-        setLoading(false);
-      } catch (err) {
-        alert(err);
-      }
-    }
-
-    loadImage();
-  }, [imageKey]);
-
-  return isLoading ? (
+   return loading ? (
     <div {...props}>Loading...</div>
+  ) : error ? (
+    <div {...props}>Error: {error}</div>
   ) : (
     <img {...props} alt={alt} src={src} />
   );

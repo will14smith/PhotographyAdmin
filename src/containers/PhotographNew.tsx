@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Form from "react-bootstrap/Form";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBackward } from "@fortawesome/free-solid-svg-icons";
@@ -10,8 +10,10 @@ import LoaderButton from "../components/LoaderButton";
 import { partialSetState } from "../utils/partialState";
 import { uploadImage } from "../api/image";
 
-export default function PhotographNew(props: RouteComponentProps) {
-  const [isSaving, setIsSaving] = useState(false);
+export default function PhotographNew() {
+  const navigate = useNavigate();
+
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [photograph, setPhotograph] = useState<Model>({
@@ -35,18 +37,18 @@ export default function PhotographNew(props: RouteComponentProps) {
       return;
     }
 
-    setIsSaving(true);
+    setSaving(true);
 
     try {
       const key = await uploadImage(image);
       const { Id: id } = await newPhotograph({ ...photograph, ImageKey: key });
 
-      props.history.push(`/photographs/${id}`);
+      navigate(`/photographs/${id}`);
     } catch (err) {
       setError("" + err);
     }
 
-    setIsSaving(false);
+    setSaving(false);
   }
 
   return (
@@ -96,10 +98,9 @@ export default function PhotographNew(props: RouteComponentProps) {
             </Form.Group>
 
             <LoaderButton
-              block
               type="submit"
               size="lg"
-              isLoading={isSaving}
+              isLoading={saving}
               disabled={!validateForm()}
             >
               Save
