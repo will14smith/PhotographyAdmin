@@ -24,7 +24,7 @@ export default function useLoader<TData>(initialState: TData, loader: LoadingFun
         }
 
         onLoad();
-    // esline-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, dependencies);
 
     function externalSetData(data: TData | ((x?: TData) => TData)) {
