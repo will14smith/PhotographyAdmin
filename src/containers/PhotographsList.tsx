@@ -36,14 +36,14 @@ export default function PhotographsList() {
   function renderPhotographsList(photographs: Photograph[]) {
     return (
       <>
-        <ListGroup.Item as={Link} action to={`${url}/new`}>
+        <ListGroup.Item as={Link} action to={`${url}/new`} key="new">
           <div className="d-flex w-100 justify-content-between align-items-center">
             <h2 className="text-muted">Upload a photograph</h2>
             <FontAwesomeIcon icon={faPlus} size="4x" />
           </div>
         </ListGroup.Item>
         {photographs.map(photograph => (
-          <ListGroup.Item as={Link} action to={`${url}/${photograph.Id}`}>
+          <ListGroup.Item as={Link} action to={`${url}/${photograph.Id}`} key={photograph.Id}>
             <div className="d-flex w-100 justify-content-between align-items-center">
               <h2>{photograph.Title}</h2>
               <PhotographThumbnail photograph={photograph} width="56px" />{" "}
