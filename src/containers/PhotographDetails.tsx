@@ -1,6 +1,6 @@
-import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import Form from "react-bootstrap/Form";
-import { Link, RouteChildrenProps } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBackward } from "@fortawesome/free-solid-svg-icons";
@@ -12,21 +12,20 @@ import {
 } from "../api/photograph";
 import LoaderButton from "../components/LoaderButton";
 import PhotographThumbnail from "../components/PhotographThumbnail";
+
 import { partialSetState } from "../utils/partialState";
+import useLoader from "../utils/useLoader";
 
-interface Props {
-  id: string;
-}
+export default function PhotographDetails() {
+  const { id } = useParams();
+  const [saving, setSaving] = useState(false);
+  const { data: photograph, loading, error, setData: setPhotograph, setError } = useLoader(undefined, () => loadPhotograph(id!), [id]);
 
-export default function PhotographDetails(props: RouteChildrenProps<Props>) {
-  const id = props.match?.params.id || "";
+  if(!id) {
+    return <Navigate to={'/photographs'} replace />
+  }
 
-  const [isLoading, setLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [photograph, setPhotograph] = useState<Photograph | null>(null);
-
-  const updatePhotograph = partialSetState(setPhotograph);
+  const updatePhotograph = partialSetState<Photograph>(setPhotograph);
 
   function validateForm() {
     return (photograph?.Title.length || 0) > 0;
@@ -39,7 +38,7 @@ export default function PhotographDetails(props: RouteChildrenProps<Props>) {
       return;
     }
 
-    setIsSaving(true);
+    setSaving(true);
 
     try {
       const updatedPhotograph = await apiUpdatePhotograph(
@@ -54,28 +53,8 @@ export default function PhotographDetails(props: RouteChildrenProps<Props>) {
       // don't clear photograph, might be validation error that the user can fix
     }
 
-    setIsSaving(false);
+    setSaving(false);
   }
-
-  useEffect(() => {
-    async function onLoad() {
-      setLoading(true);
-
-      try {
-        const photograph = await loadPhotograph(id);
-
-        setError(null);
-        setPhotograph(photograph);
-      } catch (err) {
-        setError("" + err);
-        setPhotograph(null);
-      }
-
-      setLoading(false);
-    }
-
-    onLoad();
-  }, [id]);
 
   return (
     <div>
@@ -83,7 +62,7 @@ export default function PhotographDetails(props: RouteChildrenProps<Props>) {
         <FontAwesomeIcon icon={faBackward} /> Back to list
       </Link>
 
-      {isLoading ? (
+      {loading ? (
         <h2 className="text-center text-muted">Loading...</h2>
       ) : error || !photograph ? (
         <h2 className="text-center text-danger">{error || "Failed to load"}</h2>
@@ -139,10 +118,9 @@ export default function PhotographDetails(props: RouteChildrenProps<Props>) {
             </Form.Group>
 
             <LoaderButton
-              block
               type="submit"
               size="lg"
-              isLoading={isSaving}
+              isLoading={saving}
               disabled={!validateForm()}
             >
               Save

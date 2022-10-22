@@ -10,7 +10,7 @@ interface Props extends ButtonProps {
   className?: string;
   disabled?: boolean;
 
-  children: React.ReactChild;
+  children: React.ReactNode;
 
   // this _should_ really come from the base props...
   onClick?: (event: MouseEvent) => void;

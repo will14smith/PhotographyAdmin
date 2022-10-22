@@ -1,78 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { Link, withRouter, RouteComponentProps } from "react-router-dom";
-import { Navbar, Nav } from "react-bootstrap";
-import { Auth } from "aws-amplify";
+import React from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
+import { Link, Outlet } from "react-router-dom";
+import { withAuthenticator, WithAuthenticatorProps } from '@aws-amplify/ui-react';
 
-import NavRouterLink from "./components/NavRouterLink";
-
-import Routes from "./Routes";
 import "./App.css";
+import '@aws-amplify/ui-react/styles.css';
 
-function App(props: RouteComponentProps) {
-  const [isAuthenticated, userHasAuthenticated] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(true);
-
-  useEffect(() => {
-    onLoad();
-  }, []);
-
-  async function onLoad() {
-    try {
-      await Auth.currentSession();
-      userHasAuthenticated(true);
-    } catch (e) {
-      if (e !== "No current user") {
-        alert(e);
-      }
-    }
-
-    setIsAuthenticating(false);
-  }
-
-  async function handleLogout() {
-    await Auth.signOut();
-
-    userHasAuthenticated(false);
-
-    props.history.push("/login");
-  }
-
-  if (isAuthenticating) {
-    return null;
-  }
+function App({ signOut, user }: WithAuthenticatorProps) {
+  // TODO
+  const isAuthenticated = true;
 
   return (
     <div className="App container">
-      <Navbar collapseOnSelect variant="light" bg="light">
-        <Navbar.Brand>
-          <Link to="/">Photography Admin</Link>
-        </Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Collapse>
-          <Nav className="mr-auto" activeKey={props.location.pathname}>
-            {isAuthenticated ? (
-              <>
-                <NavRouterLink to="/photographs">Photographs</NavRouterLink>
-                <NavRouterLink to="/layout">Layout</NavRouterLink>
-              </>
-            ) : null}
-          </Nav>
-          <Nav>
-            {isAuthenticated ? (
-              <>
-                <Nav.Item onClick={handleLogout}>Logout</Nav.Item>
-              </>
-            ) : (
-              <>
-                <NavRouterLink to="/login">Login</NavRouterLink>
-              </>
-            )}
-          </Nav>
-        </Navbar.Collapse>
+      <Navbar bg="light" expand="lg">
+        <Container>
+          <Navbar.Brand as={Link} to="/">Photography Admin</Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Collapse>
+            <Nav className="mr-auto">
+              {isAuthenticated ? (
+                <>
+                  <Nav.Link as={Link} to="/photographs">Photographs</Nav.Link>
+                  <Nav.Link as={Link} to="/layout">Layout</Nav.Link>
+                </>
+              ) : null}
+            </Nav>
+            <Nav>
+              {isAuthenticated ? (
+                <>
+                  <Nav.Item onClick={signOut}>Logout</Nav.Item>
+                </>
+              ) : (
+                <>
+                  <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                </>
+              )}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
       </Navbar>
-      <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
+      <Outlet />
     </div>
   );
 }
 
-export default withRouter(App);
+export default withAuthenticator(App);
