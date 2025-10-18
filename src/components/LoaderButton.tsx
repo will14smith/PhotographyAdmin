@@ -1,5 +1,7 @@
-import React, { MouseEvent } from "react";
-import { Button, ButtonProps } from "react-bootstrap";
+import React from "react";
+import type { MouseEvent } from "react";
+import { Button } from "react-bootstrap";
+import type { ButtonProps } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 

@@ -1,7 +1,10 @@
-import React, { useState, useMemo, MouseEvent } from "react";
+import { useState, useMemo } from "react";
+import type { MouseEvent } from "react";
 
-import { Photograph, loadPhotographs } from "../api/photograph";
-import { saveLayout, LayoutModel } from "../api/layout";
+import { loadPhotographs } from "../api/photograph";
+import type { Photograph } from "../api/photograph";
+import { saveLayout } from "../api/layout";
+import type { LayoutModel } from "../api/layout";
 import LayoutComponent from "../components/Layout";
 import useLoader from "../utils/useLoader";
 

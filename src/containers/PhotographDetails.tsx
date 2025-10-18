@@ -1,4 +1,5 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import Form from "react-bootstrap/Form";
 import { Link, Navigate, useParams } from "react-router-dom";
 
@@ -6,10 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBackward } from "@fortawesome/free-solid-svg-icons";
 
 import {
-  Photograph,
   loadPhotograph,
   updatePhotograph as apiUpdatePhotograph
 } from "../api/photograph";
+import type { Photograph } from "../api/photograph";
 import LoaderButton from "../components/LoaderButton";
 import PhotographThumbnail from "../components/PhotographThumbnail";
 

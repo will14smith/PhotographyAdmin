@@ -1,16 +1,15 @@
-import React from "react";
+import { lazy } from "react";
 import {
-  RouteObject,
+  type RouteObject,
 } from "react-router-dom";
 
-import App from './App';
-import NotFound from "./containers/NotFound";
-import Home from "./containers/Home";
-import PhotographsList from "./containers/PhotographsList";
-import PhotographNew from "./containers/PhotographNew";
-import PhotographDetails from "./containers/PhotographDetails";
-import Layout from "./containers/Layout";
-
+const App = lazy(() => import('./App'));
+const NotFound = lazy(() => import("./containers/NotFound"));
+const Home = lazy(() => import("./containers/Home"));
+const PhotographsList = lazy(() => import("./containers/PhotographsList"));
+const PhotographNew = lazy(() => import("./containers/PhotographNew"));
+const PhotographDetails = lazy(() => import("./containers/PhotographDetails"));
+const Layout = lazy(() => import("./containers/Layout"));
 
 const routes: RouteObject[] = [
   {

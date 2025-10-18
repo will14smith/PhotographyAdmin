@@ -1,7 +1,6 @@
-import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
-import { Photograph } from "../api/photograph";
+import type { Photograph } from "../api/photograph";
 import PhotographThumbnail from "../components/PhotographThumbnail";
 
 interface Props {

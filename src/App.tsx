@@ -1,12 +1,11 @@
-import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link, Outlet } from "react-router-dom";
-import { withAuthenticator, WithAuthenticatorProps } from '@aws-amplify/ui-react';
+import { withAuthenticator, type WithAuthenticatorProps } from '@aws-amplify/ui-react';
 
 import "./App.css";
 import '@aws-amplify/ui-react/styles.css';
 
-function App({ signOut, user }: WithAuthenticatorProps) {
+function App({ signOut }: WithAuthenticatorProps) {
   // TODO
   const isAuthenticated = true;
 

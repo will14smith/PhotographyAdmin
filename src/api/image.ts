@@ -1,9 +1,9 @@
-import { Storage } from "aws-amplify";
+import { getUrl, uploadData } from "aws-amplify/storage";
 
-export enum ImageType {
-  Full = "Full",
-  Thumbnail = "Thumbnail"
-}
+export type ImageType = "Full" | "Thumbnail";
+export const ImageTypeFull: ImageType = "Full";
+export const ImageTypeThumbnail: ImageType = "Thumbnail";
+
 export interface Image {
   Type: ImageType;
   ObjectKey: string;
@@ -22,21 +22,21 @@ function generateKey(length = 40) {
 }
 
 export async function getImageUrl(key: string): Promise<string> {
-  const url = await Storage.get(key, {
-    customPrefix: { public: "" },
-    level: "public",
-    download: false
-  });
+  const result = await getUrl({ path: key });
 
-  return url as string;
+  return result.url.toString();
 }
 
 export async function uploadImage(image: File): Promise<string> {
-  const { key }: any = await Storage.put("image/" + generateKey(), image, {
-    contentType: image.type,
-    customPrefix: { public: "" },
-    level: "public"
+  var upload = uploadData({
+    path: "image/" + generateKey(),
+    data: image,
+    options: {
+      contentType: image.type,
+    }
   });
 
-  return key;
+  const result = await upload.result;
+
+  return result.path;
 }

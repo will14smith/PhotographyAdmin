@@ -1,11 +1,10 @@
-import React from "react";
 import { ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-import { loadPhotographs, Photograph } from "../api/photograph";
+import { loadPhotographs, type Photograph } from "../api/photograph";
 import PhotographThumbnail from "../components/PhotographThumbnail";
 import useLoader from "../utils/useLoader";
 

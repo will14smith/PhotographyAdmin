@@ -1,5 +1,6 @@
-import { API } from "aws-amplify";
+import { post } from "aws-amplify/api";
 
 export async function rebuildSite() {
-  await API.post("api", "/generate", { body: {} });
+  const operation = post({ apiName: "api", path: "/generate", options: { body: {} } });
+  await operation.response;
 }
