@@ -1,7 +1,7 @@
-import React, { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { Container, Row } from "react-bootstrap";
 
-import { Photograph } from "../api/photograph";
+import type { Photograph } from "../api/photograph";
 import PhotographThumbnail from "../components/PhotographThumbnail";
 
 interface Props {

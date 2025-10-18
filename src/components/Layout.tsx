@@ -1,9 +1,9 @@
-import React, { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 
 import LayoutAvailable from "./LayoutAvailable";
 import LayoutPreview from "./LayoutPreview";
 import LoaderButton from "./LoaderButton";
-import { Photograph } from "../api/photograph";
+import type { Photograph } from "../api/photograph";
 
 interface Props {
   availablePhotographs: Photograph[];

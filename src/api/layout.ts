@@ -1,4 +1,4 @@
-import { API } from "aws-amplify";
+import { put } from "aws-amplify/api";
 
 export interface Layout {
   Order: number;
@@ -12,5 +12,6 @@ export interface LayoutModel {
 }
 
 export async function saveLayout(model: LayoutModel) {
-  await API.put("api", "/layout", { body: model });
+  const operation = put({ apiName: "api", path: "/layout", options: { body: model as any } });
+  await operation.response
 }

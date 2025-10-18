@@ -1,24 +1,26 @@
-const config = {
+import type { ResourcesConfig } from "aws-amplify";
+
+const config: ResourcesConfig = {
   Auth: {
-    identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
-    region: process.env.REACT_APP_AWS_REGION,
-    userPoolId: process.env.REACT_APP_USER_POOL_ID,
-    userPoolWebClientId: process.env.REACT_APP_USER_POOL_CLIENT_ID,
-    mandatorySignIn: true
+    Cognito: {
+      identityPoolId: import.meta.env.VITE_IDENTITY_POOL_ID || "",
+      userPoolId: import.meta.env.VITE_USER_POOL_ID || "",
+      userPoolClientId: import.meta.env.VITE_USER_POOL_CLIENT_ID || "",      
+    }
   },
   API: {
-    endpoints: [
-      {
-        name: "api",
-        endpoint: process.env.REACT_APP_ENDPOINT,
-        region: process.env.REACT_APP_AWS_REGION
+    REST: {
+      api: {
+        endpoint: import.meta.env.VITE_API_ENDPOINT || "",
+        region: import.meta.env.VITE_AWS_REGION
       }
-    ]
+    },
   },
   Storage: {
-    bucket: process.env.REACT_APP_IMAGE_BUCKET,
-    region: process.env.REACT_APP_AWS_REGION,
-    identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID
+    S3: {
+      bucket: import.meta.env.VITE_IMAGE_BUCKET,
+      region: import.meta.env.VITE_AWS_REGION,
+    }
   }
 };
 

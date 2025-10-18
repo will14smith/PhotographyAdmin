@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { ImageType } from "../api/image";
-import { Photograph } from "../api/photograph";
+import { ImageTypeThumbnail } from "../api/image";
+import type { Photograph } from "../api/photograph";
 import S3Image from "./S3Image";
 
 import "./PhotographThumbnail.css";
@@ -16,7 +16,7 @@ export default function PhotographThumbnail({
   width,
   ...props
 }: Props) {
-  const thumbnail = photograph.Images.find(x => x.Type === ImageType.Thumbnail);
+  const thumbnail = photograph.Images.find(x => x.Type === ImageTypeThumbnail);
   if (!thumbnail) {
     return (
       <img

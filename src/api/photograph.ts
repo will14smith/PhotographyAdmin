@@ -1,7 +1,7 @@
-import { API } from "aws-amplify";
+import { get, post, put } from "aws-amplify/api";
 
-import { Image } from "./image";
-import { Layout } from "./layout";
+import type { Image } from "./image";
+import type { Layout } from "./layout";
 
 export interface Photograph {
   Id: string;
@@ -35,28 +35,33 @@ function toAppModel(apiModel: any): Photograph {
 }
 
 export async function loadPhotographs(): Promise<Photograph[]> {
-  const apiModels = await API.get("api", "/photograph", {});
+  const operation = get({ apiName: "api", path: "/photograph" });
+  const response = await operation.response;
+  const apiModels = (await response.body.json()) as any[];
 
   return apiModels.map(toAppModel);
 }
 
 export async function loadPhotograph(id: string): Promise<Photograph> {
-  const apiModel = await API.get("api", `/photograph/${id}`, {});
+  const operation = get({ apiName: "api", path: `/photograph/${id}` });
+  const response = await operation.response;
 
-  return toAppModel(apiModel);
+  return toAppModel(await response.body.json());
 }
 
 export async function newPhotograph(model: PhotographNew): Promise<Photograph> {
-  const apiModel = await API.post("api", `/photograph`, { body: model });
+  const operation = post({ apiName: "api", path: `/photograph`, options: { body: model as any } });
+  const response = await operation.response;
 
-  return toAppModel(apiModel);
+  return toAppModel(await response.body.json());
 }
 
 export async function updatePhotograph(
   id: string,
   model: PhotographUpdate
 ): Promise<Photograph> {
-  const apiModel = await API.put("api", `/photograph/${id}`, { body: model });
+  const operation = put({ apiName: "api", path: `/photograph/${id}`, options: { body: model as any } });
+  const response = await operation.response;
 
-  return toAppModel(apiModel);
+  return toAppModel(await response.body.json());
 }
