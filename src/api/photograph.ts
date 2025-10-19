@@ -33,6 +33,11 @@ export interface TitleSuggestion {
   Title: string;
 }
 
+export interface ThumbnailRequest {
+  Width?: number;
+  Height?: number;
+}
+
 function toAppModel(apiModel: any): Photograph {
   return {
     ...apiModel,
@@ -87,4 +92,15 @@ export async function getSuggestions(id: string): Promise<TitleSuggestion[]> {
   const suggestions = (await response.body.json()) as any;
 
   return suggestions.map((x: any) => ({ Title: x })) as TitleSuggestion[];
+}
+
+export async function generateThumbnail(id: string, request: ThumbnailRequest): Promise<Photograph> {
+  const operation = post({ 
+    apiName: "api", 
+    path: `/photograph/${id}/thumbnail`, 
+    options: { body: request as any } 
+  });
+  const response = await operation.response;
+
+  return toAppModel(await response.body.json());
 }

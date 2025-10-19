@@ -10,9 +10,9 @@ function App({ signOut }: WithAuthenticatorProps) {
   const isAuthenticated = true;
 
   return (
-    <div className="App container">
+    <div className="App container-fluid">
       <Navbar bg="light" expand="lg">
-        <Container>
+        <Container fluid>
           <Navbar.Brand as={Link} to="/">Photography Admin</Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse>

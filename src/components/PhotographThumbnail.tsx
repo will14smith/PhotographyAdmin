@@ -16,7 +16,9 @@ export default function PhotographThumbnail({
   width,
   ...props
 }: Props) {
-  const thumbnail = photograph.Images.find(x => x.Type === ImageTypeThumbnail);
+  // Get the LAST thumbnail in the list
+  const thumbnail = photograph.Images.findLast(x => x.Type === ImageTypeThumbnail);
+  
   if (!thumbnail) {
     return (
       <img
