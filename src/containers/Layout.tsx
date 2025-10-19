@@ -135,7 +135,7 @@ export default function Layout() {
     }
 
     const currentValue = photograph.Layout[dimension] || 1;
-    const newValue = Math.max(1, Math.min(3, currentValue + delta));
+    const newValue = Math.max(1, Math.min(4, currentValue + delta));
 
     if (currentValue === newValue) {
       return;

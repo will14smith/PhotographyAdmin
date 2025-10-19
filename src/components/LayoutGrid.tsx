@@ -32,7 +32,8 @@ function GridItem({ photograph, onResize, onRemove }: GridItemProps) {
     gridColumn: `span ${width}`,
     gridRow: `span ${height}`,
     opacity: isDragging ? 0.5 : 1,
-    position: "relative" as const
+    position: "relative" as const,
+    height: "calc(100vw / 4)"
   };
 
   return (
@@ -97,7 +98,7 @@ function GridItem({ photograph, onResize, onRemove }: GridItemProps) {
             e.stopPropagation();
             onResize(photograph.Id, "Width", 1);
           }}
-          disabled={width >= 3}
+          disabled={width >= 4}
           title="Increase width"
         >
           +
