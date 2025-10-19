@@ -14,6 +14,10 @@ export interface Photograph {
   UploadTime: Date;
 }
 
+export interface PhotographCreate {
+  ImageKey: string;
+}
+
 export interface PhotographNew {
   Title: string;
   ImageKey: string;
@@ -23,6 +27,10 @@ export interface PhotographNew {
 export interface PhotographUpdate {
   Title: string;
   CaptureTime: Date;
+}
+
+export interface TitleSuggestion {
+  Title: string;
 }
 
 function toAppModel(apiModel: any): Photograph {
@@ -49,6 +57,13 @@ export async function loadPhotograph(id: string): Promise<Photograph> {
   return toAppModel(await response.body.json());
 }
 
+export async function createPhotograph(model: PhotographCreate): Promise<Photograph> {
+  const operation = post({ apiName: "api", path: `/photograph`, options: { body: model as any } });
+  const response = await operation.response;
+
+  return toAppModel(await response.body.json());
+}
+
 export async function newPhotograph(model: PhotographNew): Promise<Photograph> {
   const operation = post({ apiName: "api", path: `/photograph`, options: { body: model as any } });
   const response = await operation.response;
@@ -64,4 +79,12 @@ export async function updatePhotograph(
   const response = await operation.response;
 
   return toAppModel(await response.body.json());
+}
+
+export async function getSuggestions(id: string): Promise<TitleSuggestion[]> {
+  const operation = post({ apiName: "api", path: `/photograph/${id}/suggestions` });
+  const response = await operation.response;
+  const suggestions = (await response.body.json()) as any;
+
+  return suggestions.map((x: any) => ({ Title: x })) as TitleSuggestion[];
 }

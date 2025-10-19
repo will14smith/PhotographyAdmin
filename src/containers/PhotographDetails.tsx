@@ -8,9 +8,10 @@ import { faBackward } from "@fortawesome/free-solid-svg-icons";
 
 import {
   loadPhotograph,
-  updatePhotograph as apiUpdatePhotograph
+  updatePhotograph as apiUpdatePhotograph,
+  getSuggestions
 } from "../api/photograph";
-import type { Photograph } from "../api/photograph";
+import type { Photograph, TitleSuggestion } from "../api/photograph";
 import LoaderButton from "../components/LoaderButton";
 import PhotographThumbnail from "../components/PhotographThumbnail";
 
@@ -20,6 +21,11 @@ import useLoader from "../utils/useLoader";
 export default function PhotographDetails() {
   const { id } = useParams();
   const [saving, setSaving] = useState(false);
+
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<TitleSuggestion[]>([]);
+  const [suggestionsError, setSuggestionsError] = useState<string | null>(null);
+
   const { data: photograph, loading, error, setData: setPhotograph, setError } = useLoader(undefined, () => loadPhotograph(id!), [id]);
 
   if(!id) {
@@ -28,8 +34,22 @@ export default function PhotographDetails() {
 
   const updatePhotograph = partialSetState<Photograph>(setPhotograph);
 
-  function validateForm() {
-    return (photograph?.Title.length || 0) > 0;
+  async function handleGetSuggestions() {
+    if (!id) {
+      return;
+    }
+
+    setLoadingSuggestions(true);
+    
+    try {
+      const titleSuggestions = await getSuggestions(id);
+      setSuggestions(titleSuggestions);
+      setSuggestionsError(null);
+    } catch (err) {
+      setSuggestionsError("Failed to load suggestions: " + err);
+    }
+
+    setLoadingSuggestions(false);
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -74,31 +94,78 @@ export default function PhotographDetails() {
           </div>
 
           <Form className="mt-3" onSubmit={handleSubmit}>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Title</Form.Label>
+              <div className="d-flex gap-2">
+                <Form.Control
+                  type="text"
+                  placeholder="Enter photograph title"
+                  size="lg"
+                  value={photograph.Title || ""}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    updatePhotograph({ Title: e.target.value })
+                  }
+                />
+                <LoaderButton
+                  variant="secondary"
+                  size="lg"
+                  isLoading={loadingSuggestions}
+                  onClick={handleGetSuggestions}
+                  type="button"
+                >
+                  Suggest
+                </LoaderButton>
+              </div>
+              {!photograph.Title && (
+                <Form.Text className="text-warning">
+                  You should really have a title.
+                </Form.Text>
+              )}
+            </Form.Group>
+
+            {suggestionsError && (
+              <Form.Text className="text-danger">
+                {suggestionsError}
+              </Form.Text>
+            )}
+
+            {suggestions.length > 0 && (
+              <Form.Group className="mb-3">
+                <Form.Label>Suggested Titles</Form.Label>
+                {suggestions.map((suggestion, index) => (
+                  <Form.Check
+                    key={index}
+                    type="radio"
+                    id={`suggestion-${index}`}
+                    name="titleSuggestion"
+                    label={suggestion.Title}
+                    onChange={() => {
+                      updatePhotograph({ Title: suggestion.Title });
+                      setSuggestions([]);
+                    }}
+                  />
+                ))}
+              </Form.Group>
+            )}
+
+            <Form.Group className="mb-3">
+              <Form.Label>Capture Time</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Enter photograph title"
+                type="datetime-local"
+                placeholder="Enter photograph capture time"
                 size="lg"
-                value={photograph.Title}
+                value={photograph.CaptureTime ? photograph.CaptureTime.toISOString().slice(0,16) : ""}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  updatePhotograph({ Title: e.target.value })
+                  updatePhotograph({ CaptureTime: new Date(e.target.value + ":00Z") })
                 }
               />
+              {!photograph.CaptureTime && (
+                <Form.Text className="text-warning">
+                  Capture date is required
+                </Form.Text>
+              )}
             </Form.Group>
-            <Form.Group>
-              <Form.Label>Capture Date</Form.Label>
-              <Form.Control
-                type="date"
-                placeholder="Enter photograph capture date"
-                size="lg"
-                value={photograph.CaptureTime.toISOString().split("T")[0]}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  updatePhotograph({ CaptureTime: new Date(e.target.value) })
-                }
-              />
-            </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Upload Time</Form.Label>
               <Form.Control
                 type="date"
@@ -122,7 +189,6 @@ export default function PhotographDetails() {
               type="submit"
               size="lg"
               isLoading={saving}
-              disabled={!validateForm()}
             >
               Save
             </LoaderButton>
