@@ -34,7 +34,9 @@ export default function useLoader<TData>(initialState: TData, loader: LoadingFun
     }
 
     function externalSetError(error: string | null) {
-        setData(initialState);
+        if(error !== null) {
+            setData(initialState);
+        }
         setError(error);
         setLoading(false);
     }

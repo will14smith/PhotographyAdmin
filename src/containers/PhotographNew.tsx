@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import Form from "react-bootstrap/Form";
+import { Form, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,8 @@ import { createPhotograph, getSuggestions, updatePhotograph } from "../api/photo
 import type { Photograph, TitleSuggestion } from "../api/photograph";
 import LoaderButton from "../components/LoaderButton";
 import { uploadImage } from "../api/image";
+import PhotographThumbnail from "../components/PhotographThumbnail";
+import ThumbnailManager from "../components/ThumbnailManager";
 
 type Stage = "selecting" | "uploading" | "creating" | "suggestions" | "editing";
 
@@ -133,6 +135,24 @@ export default function PhotographNew() {
 
             {photograph && stage === "editing" && (
               <>
+                <Row className="mb-4">
+                  <Col md={6}>
+                    <div className="text-center">
+                      <PhotographThumbnail 
+                        photograph={photograph} 
+                        width="100%"
+                        style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                      />
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <ThumbnailManager 
+                      photograph={photograph}
+                      onPhotographUpdated={setPhotograph}
+                    />
+                  </Col>
+                </Row>
+
                 {suggestions.length > 0 && (
                   <Form.Group className="mb-3">
                     <Form.Label>Suggested Titles</Form.Label>

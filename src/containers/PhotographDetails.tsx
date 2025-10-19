@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import Form from "react-bootstrap/Form";
+import { Form, Row, Col, InputGroup } from "react-bootstrap";
 import { Link, Navigate, useParams } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +14,7 @@ import {
 import type { Photograph, TitleSuggestion } from "../api/photograph";
 import LoaderButton from "../components/LoaderButton";
 import PhotographThumbnail from "../components/PhotographThumbnail";
+import ThumbnailManager from "../components/ThumbnailManager";
 
 import { partialSetState } from "../utils/partialState";
 import useLoader from "../utils/useLoader";
@@ -89,9 +90,23 @@ export default function PhotographDetails() {
         <h2 className="text-center text-danger">{error || "Failed to load"}</h2>
       ) : (
         <>
-          <div className="text-center">
-            <PhotographThumbnail photograph={photograph} width="500px" />
-          </div>
+          <Row className="mb-4">
+            <Col md={6}>
+              <div className="text-center">
+                <PhotographThumbnail 
+                  photograph={photograph}
+                  width="100%"         
+                  style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                  />
+              </div>
+            </Col>
+            <Col md={6}>
+              <ThumbnailManager 
+                photograph={photograph}
+                onPhotographUpdated={setPhotograph}
+              />
+            </Col>
+          </Row>
 
           <Form className="mt-3" onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
@@ -167,22 +182,24 @@ export default function PhotographDetails() {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Upload Time</Form.Label>
-              <Form.Control
-                type="date"
-                readOnly
-                size="lg"
-                value={photograph.UploadTime.toISOString().split("T")[0]}
-              />
-              <Form.Control
-                type="time"
-                readOnly
-                size="lg"
-                value={
-                  photograph.UploadTime.toISOString()
-                    .split("T")[1]
-                    .split(".")[0]
-                }
-              />
+              <InputGroup>
+                <Form.Control
+                  type="date"
+                  readOnly
+                  size="lg"
+                  value={photograph.UploadTime.toISOString().split("T")[0]}
+                />
+                <Form.Control
+                  type="time"
+                  readOnly
+                  size="lg"
+                  value={
+                    photograph.UploadTime.toISOString()
+                      .split("T")[1]
+                      .split(".")[0]
+                  }
+                />
+              </InputGroup>
             </Form.Group>
 
             <LoaderButton

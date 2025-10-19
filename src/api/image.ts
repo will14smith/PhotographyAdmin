@@ -7,6 +7,8 @@ export const ImageTypeThumbnail: ImageType = "Thumbnail";
 export interface Image {
   Type: ImageType;
   ObjectKey: string;
+  Width?: number;
+  Height?: number;
 }
 
 function generateKey(length = 40) {
