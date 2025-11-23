@@ -20,6 +20,7 @@ function App({ signOut }: WithAuthenticatorProps) {
               {isAuthenticated ? (
                 <>
                   <Nav.Link as={Link} to="/photographs">Photographs</Nav.Link>
+                  <Nav.Link as={Link} to="/stories">Stories</Nav.Link>
                   <Nav.Link as={Link} to="/layout">Layout</Nav.Link>
                 </>
               ) : null}

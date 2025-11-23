@@ -9,14 +9,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { loadPhotographs, type Photograph } from "../api/photograph";
 import PhotographThumbnail from "../components/PhotographThumbnail";
 import useLoader from "../utils/useLoader";
-
-function formatDate(date: Date): string {
-  return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-function formatDateShort(date: Date): string {
-  return date.toLocaleDateString();
-}
+import { formatDate, formatDateTime } from "../utils/dates";
 
 export default function PhotographList() {
   const { data: photographs, loading, error } = useLoader([], loadPhotographs, []);
@@ -28,8 +21,8 @@ export default function PhotographList() {
     return new Fuse(photographs, {
       keys: [
         { name: 'Title', weight: 2 }, // Title is most important
-        { name: 'CaptureTime', getFn: (photo) => formatDate(photo.CaptureTime), weight: 1 },
-        { name: 'UploadTime', getFn: (photo) => formatDate(photo.UploadTime), weight: 0.5 }
+        { name: 'CaptureTime', getFn: (photo) => formatDateTime(photo.CaptureTime), weight: 1 },
+        { name: 'UploadTime', getFn: (photo) => formatDateTime(photo.UploadTime), weight: 0.5 }
       ],
       threshold: 0.4, // Lower = more strict, higher = more fuzzy (0.0 to 1.0)
       includeScore: true,
@@ -127,10 +120,10 @@ function renderPhotographsGrid(photographs: Photograph[], searchText: string) {
               </Card.Title>
               <Card.Text as="div" className="small text-muted">
                 <div className="mb-1">
-                  <strong>Captured:</strong> {formatDateShort(photograph.CaptureTime)}
+                  <strong>Captured:</strong> {formatDate(photograph.CaptureTime)}
                 </div>
                 <div>
-                  <strong>Uploaded:</strong> {formatDateShort(photograph.UploadTime)}
+                  <strong>Uploaded:</strong> {formatDate(photograph.UploadTime)}
                 </div>
               </Card.Text>
             </Card.Body>

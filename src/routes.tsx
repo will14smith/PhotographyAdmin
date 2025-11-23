@@ -10,6 +10,9 @@ const PhotographsList = lazy(() => import("./containers/PhotographsList"));
 const PhotographNew = lazy(() => import("./containers/PhotographNew"));
 const PhotographDetails = lazy(() => import("./containers/PhotographDetails"));
 const Layout = lazy(() => import("./containers/Layout"));
+const StoriesList = lazy(() => import("./containers/StoriesList"));
+const StoryNew = lazy(() => import("./containers/StoryNew"));
+const StoryDetails = lazy(() => import("./containers/StoryDetails"));
 
 const routes: RouteObject[] = [
   {
@@ -41,7 +44,24 @@ const routes: RouteObject[] = [
       },
       {
         path: 'layout',
-        element: <Layout />
+        element: <Layout />,
+      },
+      {
+        path: 'stories',
+        children: [
+          {
+            index: true,
+            element: <StoriesList />,
+          },
+          {
+            path: 'new',
+            element: <StoryNew />,
+          },
+          {
+            path: ':id',
+            element: <StoryDetails />,
+          },
+        ],
       },
     ],
   },
