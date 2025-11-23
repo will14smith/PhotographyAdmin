@@ -80,9 +80,16 @@ export default function StoryBlockEditor({
                     const photograph = availablePhotographs.find(
                       (p) => p.Id === (block as ImageBlock).PhotographId
                     );
-                    return photograph && photograph.Images[0]?.ObjectKey ? (
-                      <S3Image imageKey={photograph.Images[0].ObjectKey} style={{ maxWidth: "200px",  maxHeight: "200px" }} />
-                    ) : null;
+                    if(!photograph) {
+                      return null;
+                    }
+
+                    const imageKey = photograph.Images.find(img => img.Type === "Thumbnail")?.ObjectKey || photograph.Images[0]?.ObjectKey;
+                    if(!imageKey) {
+                      return null;
+                    }
+
+                    return <S3Image imageKey={imageKey} style={{ maxWidth: "200px", maxHeight: "200px" }} />;
                   })()}
                 </Col>
               )}
